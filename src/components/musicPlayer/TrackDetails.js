@@ -37,21 +37,24 @@ export default function TrackDetails() {
 const styles = StyleSheet.create({
   container: {
     height: '50%',
-    marginHorizontal: 20,
+    width: '100%',
   },
   albumCoverContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
+    width: '100%',
   },
   albumCover: {
-    width: '100%',
-    height: '90%',
+    width: '94%',
+    height: '94%',
     resizeMode: 'contain',
+    borderRadius: 25,
   },
   trackDetailsContainer: {
     flexDirection: 'row',
+    marginHorizontal: 15,
     justifyContent: 'space-between',
     alignItems: 'center',
   },

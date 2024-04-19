@@ -11,6 +11,8 @@ import PreviousTrack from '../../../assets/icons/musicPlayer/previousTrack.svg';
 import NextTrack from '../../../assets/icons/musicPlayer/nextTrack.svg';
 import ProgressBar from 'react-native-progress/Bar';
 import Pause from '../../../assets/icons/musicPlayer/pause.svg';
+import VolumeOff from '../../../assets/icons/musicPlayer/volumeOff.svg';
+import VolumeMax from '../../../assets/icons/musicPlayer/volumeMax.svg';
 
 export default function Controls() {
   const {width} = Dimensions.get('window');
@@ -18,8 +20,8 @@ export default function Controls() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.progressBarContainer}>
-        <ProgressBar width={width - 30} progress={0.3} color={'white'} />
+      <View style={styles.trackLengthContainer}>
+        <ProgressBar width={width - 75} progress={0.3} color={'white'} />
       </View>
       <View style={styles.controlsContainer}>
         <TouchableOpacity>
@@ -48,6 +50,23 @@ export default function Controls() {
           <NextTrack width={60} height={60} fill={'white'} />
         </TouchableOpacity>
       </View>
+      <View style={styles.volumeContainer}>
+        <VolumeOff
+          width={20}
+          height={20}
+          fill={'white'}
+          style={styles.volumeOff}
+        />
+        <View>
+          <ProgressBar width={width - 125} progress={0.3} color={'white'} />
+        </View>
+        <VolumeMax
+          width={20}
+          height={20}
+          fill={'white'}
+          style={styles.volumeMax}
+        />
+      </View>
     </View>
   );
 }
@@ -57,7 +76,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 300,
+    height: '60%',
   },
   controlsContainer: {
     flexDirection: 'row',
@@ -67,5 +86,16 @@ const styles = StyleSheet.create({
   },
   playIcon: {
     marginHorizontal: 25,
+  },
+  volumeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  volumeOff: {
+    marginRight: 5,
+  },
+  volumeMax: {
+    marginLeft: 10,
   },
 });
