@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Favorite from '../../../assets/icons/musicPlayer/favorite.svg';
 import Queue from '../../../assets/icons/musicPlayer/queue.svg';
 
