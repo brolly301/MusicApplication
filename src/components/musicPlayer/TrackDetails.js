@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import Favorite from '../../../assets/icons/musicPlayer/favorite.svg';
 import Queue from '../../../assets/icons/musicPlayer/queue.svg';
 
-export default function TrackDetails() {
+export default function TrackDetails({activeTrack}) {
   const [favorite, setFavorite] = useState(false);
 
   return (
@@ -19,8 +19,8 @@ export default function TrackDetails() {
           <Queue width={30} height={30} fill={'white'} />
         </TouchableOpacity>
         <View style={styles.trackTextContainer}>
-          <Text style={styles.trackTitle}>San Francisco</Text>
-          <Text style={styles.trackArtist}>Mac Miller</Text>
+          <Text style={styles.trackTitle}>{activeTrack?.title}</Text>
+          <Text style={styles.trackArtist}>{activeTrack?.artist}</Text>
         </View>
         <TouchableOpacity onPress={() => setFavorite(!favorite)}>
           <Favorite

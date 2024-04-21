@@ -10,13 +10,21 @@ import createDataContext from './createDataContext';
 const reducer = (state, action) => {
   switch (action.type) {
     case 'setup_track_player':
-      return {...state, isSetup: true};
-
+      return {...state, isSetup: true, volume: action.payload.volume};
     case 'play_track':
       return {...state, isPlaying: true};
-
     case 'pause_track':
       return {...state, isPlaying: false};
+    case 'increase_volume':
+      return {...state, volume: state.volume + 0.1};
+    case 'decrease_volume':
+      return {...state, volume: state.volume - 0.1};
+    case 'set_specific_volume':
+      return {...state, volume: action.payload};
+    case 'get_active_track':
+      return {...state, activeTrack: action.payload};
+    case 'change_track_time':
+      return {...state, duration: action.payload};
   }
 };
 
@@ -42,7 +50,10 @@ const setupTrackPlayer = dispatch => async () => {
       ],
       progressUpdateEventInterval: 2,
     });
-    dispatch({type: 'setup_track_player'});
+    const volume = await TrackPlayer.getVolume();
+
+    dispatch({type: 'setup_track_player', payload: {volume: volume}});
+    return volume;
   } catch (e) {
     console.log(e);
   }
@@ -116,6 +127,46 @@ const nextTrack = dispatch => () => {
   }
 };
 
+const increaseVolume = dispatch => async () => {
+  try {
+    const volume = await TrackPlayer.getVolume();
+    if (volume < 1) {
+      await TrackPlayer.setVolume(volume + 0.1);
+      dispatch({type: 'increase_volume'});
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const decreaseVolume = dispatch => async () => {
+  try {
+    const volume = await TrackPlayer.getVolume();
+    if (volume > 0) {
+      await TrackPlayer.setVolume(volume - 0.1);
+      dispatch({type: 'decrease_volume'});
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const setSpecificVolume = dispatch => async volume => {
+  try {
+    await TrackPlayer.setVolume(volume);
+    dispatch({type: 'set_specific_volume', payload: volume});
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const setTrackDuration = dispatch => async value => {
+  try {
+    await TrackPlayer.seekTo(value);
+    dispatch({type: 'change_track_time', payload: value});
+  } catch (e) {}
+};
+
 export const {Provider, Context} = createDataContext(
   reducer,
   {
@@ -125,6 +176,10 @@ export const {Provider, Context} = createDataContext(
     pauseTrack,
     previousTrack,
     nextTrack,
+    increaseVolume,
+    decreaseVolume,
+    setSpecificVolume,
+    setTrackDuration,
   },
-  {isSetup: false, isPlaying: false},
+  {isSetup: false, isPlaying: false, volume: null, activeTrack: {}},
 );

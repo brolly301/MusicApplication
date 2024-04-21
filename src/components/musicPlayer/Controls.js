@@ -9,27 +9,46 @@ import React, {useEffect, useState} from 'react';
 import Play from '../../../assets/icons/musicPlayer/play.svg';
 import PreviousTrack from '../../../assets/icons/musicPlayer/previousTrack.svg';
 import NextTrack from '../../../assets/icons/musicPlayer/nextTrack.svg';
-import ProgressBar from 'react-native-progress/Bar';
 import Pause from '../../../assets/icons/musicPlayer/pause.svg';
 import VolumeOff from '../../../assets/icons/musicPlayer/volumeOff.svg';
 import VolumeMax from '../../../assets/icons/musicPlayer/volumeMax.svg';
 import useTrackContext from '../../hooks/context/useTrackContext';
+import Slider from '@react-native-community/slider';
 
-export default function Controls() {
-  const {state, playTrack, pauseTrack, nextTrack, previousTrack} =
-    useTrackContext();
+export default function Controls({activeTrack}) {
+  const {
+    state,
+    playTrack,
+    pauseTrack,
+    nextTrack,
+    previousTrack,
+    increaseVolume,
+    decreaseVolume,
+    setSpecificVolume,
+    setTrackDuration,
+  } = useTrackContext();
   const {width} = Dimensions.get('window');
   const [trackPlaying, setTrackPlaying] = useState(state.isPlaying);
-  const [volume, setVolume] = useState(0);
+  const [volume, setVolume] = useState(state.volume);
 
   useEffect(() => {
     setTrackPlaying(state.isPlaying);
-  }, [state.isPlaying]);
+    setVolume(state.volume);
+  }, [state.isPlaying, state.volume]);
 
   return (
     <View style={styles.container}>
       <View style={styles.trackLengthContainer}>
-        <ProgressBar width={width - 75} progress={0.3} color={'white'} />
+        <Slider
+          style={{width: width - 30, height: 20}}
+          value={1}
+          maximumValue={activeTrack?.duration}
+          minimumValue={1}
+          color={'white'}
+          onValueChange={value => {
+            setTrackDuration(value);
+          }}
+        />
       </View>
       <View style={styles.controlsContainer}>
         <TouchableOpacity onPress={() => previousTrack()}>
@@ -59,21 +78,34 @@ export default function Controls() {
         </TouchableOpacity>
       </View>
       <View style={styles.volumeContainer}>
-        <VolumeOff
-          width={20}
-          height={20}
-          fill={'white'}
-          style={styles.volumeOff}
-        />
+        <TouchableOpacity onPress={() => decreaseVolume()}>
+          <VolumeOff
+            width={20}
+            height={20}
+            fill={'white'}
+            style={styles.volumeOff}
+          />
+        </TouchableOpacity>
         <View>
-          <ProgressBar width={width - 125} progress={0.3} color={'white'} />
+          <Slider
+            style={{width: width - 130, height: 20}}
+            value={volume}
+            maximumValue={1}
+            minimumValue={0.0}
+            color={'white'}
+            onValueChange={value => {
+              setSpecificVolume(value);
+            }}
+          />
         </View>
-        <VolumeMax
-          width={20}
-          height={20}
-          fill={'white'}
-          style={styles.volumeMax}
-        />
+        <TouchableOpacity onPress={() => increaseVolume()}>
+          <VolumeMax
+            width={20}
+            height={20}
+            fill={'white'}
+            style={styles.volumeMax}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
