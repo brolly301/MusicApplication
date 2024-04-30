@@ -2,6 +2,7 @@ import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Favorite from '../../../assets/icons/musicPlayer/favorite.svg';
 import Queue from '../../../assets/icons/musicPlayer/queue.svg';
+import AlbumCover from '../../../assets/images/albumCover.png';
 
 export default function TrackDetails({activeTrack}) {
   const [favorite, setFavorite] = useState(false);
@@ -9,10 +10,7 @@ export default function TrackDetails({activeTrack}) {
   return (
     <View style={styles.container}>
       <View style={styles.albumCoverContainer}>
-        <Image
-          source={require('../../../assets/images/albumCover.png')}
-          style={styles.albumCover}
-        />
+        <Image source={AlbumCover} style={styles.albumCover} />
       </View>
       <View style={styles.trackDetailsContainer}>
         <TouchableOpacity>

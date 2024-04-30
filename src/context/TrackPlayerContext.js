@@ -24,7 +24,9 @@ const reducer = (state, action) => {
     case 'get_active_track':
       return {...state, activeTrack: action.payload};
     case 'change_track_time':
-      return {...state, duration: action.payload};
+      return {...state, currentTrackTime: action.payload};
+    case 'get_track_progress':
+      return {...state, currentTrackTime: action.payload};
   }
 };
 
@@ -66,28 +68,28 @@ const addTracks = dispatch => async () => {
       url: require('../../assets/audio/SanFrancisco.mp3'),
       title: 'San Francisco',
       artist: 'Mac Miller',
-      duration: 217,
+      duration: 164,
     },
     {
       id: '2',
       url: require('../../assets/audio/BirdCall.mp3'),
       title: 'Bird Call',
       artist: 'Mac Miller',
-      duration: 180,
+      duration: 129,
     },
     {
       id: '3',
       url: require('../../assets/audio/BreakTheLaw.mp3'),
       title: 'Break The Law',
       artist: 'Mac Miller',
-      duration: 201,
+      duration: 196,
     },
     {
       id: '4',
       url: require('../../assets/audio/BrandName.mp3'),
       title: 'Brand Name',
       artist: 'Mac Miller',
-      duration: 267,
+      duration: 303,
     },
   ]);
   await TrackPlayer.setRepeatMode(RepeatMode.Queue);
@@ -167,6 +169,19 @@ const setTrackDuration = dispatch => async value => {
   } catch (e) {}
 };
 
+const getTrackProgress = dispatch => async callback => {
+  try {
+    const track = await TrackPlayer.getProgress();
+    dispatch({
+      type: 'get_track_progress',
+      payload: track.position,
+    });
+    if (callback) {
+      callback();
+    }
+  } catch (e) {}
+};
+
 export const {Provider, Context} = createDataContext(
   reducer,
   {
@@ -180,6 +195,13 @@ export const {Provider, Context} = createDataContext(
     decreaseVolume,
     setSpecificVolume,
     setTrackDuration,
+    getTrackProgress,
   },
-  {isSetup: false, isPlaying: false, volume: null, activeTrack: {}},
+  {
+    isSetup: false,
+    isPlaying: false,
+    volume: null,
+    activeTrack: {},
+    currentTrackTime: 0,
+  },
 );

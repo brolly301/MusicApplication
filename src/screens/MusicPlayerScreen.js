@@ -5,12 +5,23 @@ import TrackDetails from '../components/musicPlayer/TrackDetails';
 import BackButton from '../../assets/icons/backButton.svg';
 import useTrackContext from '../hooks/context/useTrackContext';
 import TrackPlayer, {Event} from 'react-native-track-player';
+import AlbumCover from '../../assets/images/albumCover.png';
+import {getColors} from 'react-native-image-colors';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function MusicPlayerScreen() {
   const {state, setupTrackPlayer, addTracks} = useTrackContext();
   const [activeTrack, setActiveTrack] = useState(null);
 
+  const [colors, setColors] = useState(null);
+
   useEffect(() => {
+    // getColors(AlbumCover, {
+    //   fallback: '#228B22',
+    //   cache: true,
+    //   key: AlbumCover,
+    // }).then(setColors);
+
     async function setup() {
       await setupTrackPlayer();
       const queue = await TrackPlayer.getQueue();
@@ -43,14 +54,18 @@ export default function MusicPlayerScreen() {
     };
   }, [state.isSetup]);
 
-  console.log(activeTrack);
-
   return (
-    <View style={styles.container}>
+    // <LinearGradient
+    //   colors={[
+    //     colors?.dominant?.toString() + 'CC',
+    //     colors?.average?.toString() + 'CC',
+    //   ]}>
+    <View style={[styles.container]}>
       <BackButton width={30} height={30} style={styles.backButton} />
       <TrackDetails activeTrack={activeTrack} />
       <Controls activeTrack={activeTrack} />
     </View>
+    // </LinearGradient>
   );
 }
 
@@ -58,8 +73,8 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    backgroundColor: 'gray',
     padding: 20,
+    backgroundColor: '#5B5A5A',
   },
   backButton: {
     marginLeft: 5,

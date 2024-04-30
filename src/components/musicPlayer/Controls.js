@@ -26,6 +26,7 @@ export default function Controls({activeTrack}) {
     decreaseVolume,
     setSpecificVolume,
     setTrackDuration,
+    getTrackProgress,
   } = useTrackContext();
   const {width} = Dimensions.get('window');
   const [trackPlaying, setTrackPlaying] = useState(state.isPlaying);
@@ -34,21 +35,36 @@ export default function Controls({activeTrack}) {
   useEffect(() => {
     setTrackPlaying(state.isPlaying);
     setVolume(state.volume);
-  }, [state.isPlaying, state.volume]);
+    getTrackProgress();
+  }, [state.isPlaying, state.volume, state.currentTrackTime]);
+
+  const currentTrackTime = trackTime => {
+    const seconds = Math.floor(trackTime % 60);
+    const minutes = Math.floor(trackTime / 60);
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+    const fullTime = `${formattedMinutes}:${formattedSeconds}`;
+    return fullTime;
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.trackLengthContainer}>
         <Slider
           style={{width: width - 30, height: 20}}
-          value={1}
+          value={state.currentTrackTime}
           maximumValue={activeTrack?.duration}
-          minimumValue={1}
+          minimumValue={0}
           color={'white'}
           onValueChange={value => {
             setTrackDuration(value);
           }}
         />
+        <View style={styles.trackDurationContainer}>
+          <Text>{currentTrackTime(state.currentTrackTime)}</Text>
+          <Text>{currentTrackTime(activeTrack?.duration)}</Text>
+        </View>
       </View>
       <View style={styles.controlsContainer}>
         <TouchableOpacity onPress={() => previousTrack()}>
@@ -137,5 +153,10 @@ const styles = StyleSheet.create({
   },
   volumeMax: {
     marginLeft: 10,
+  },
+  trackDurationContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    justifyContent: 'space-between',
   },
 });
